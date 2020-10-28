@@ -1,0 +1,27 @@
+---
+title: "課?<a0>?練習模<e7><89><88>"
+author: "AnWen"
+date: "2020-10-28"
+output: output_format
+params:
+  id: "410873022"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+##Vector
+```{r}
+vectorExample <- c("小明", "小英", "大雄")
+
+```
+```{r}
+vectorExample[[1]]#用位置選[[.]]
+```
+```{r}
+vectorExample
+vectorExample[c(1, 3)]#用位置選多個元素[c(...)]
+```
+##list
