@@ -1,0 +1,269 @@
+---
+title: "課?<a0>?練習模<e7><89><88>"
+author: "AnWen"
+date: "2020-11-02"
+output: output_format
+params:
+  id: "410873022"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+##Atomic(同類型值) Vector原子向量:Numeric Character Logical
+```{r}
+##concatenate(堆疊):(要代表的值不只一個)相同類型值,形成向量
+##c不管原先堆多少曾,最後只會剩下一層C
+num1 <- 5
+vNum1 <- c(2,5)
+vNum2 <- c(2, vNum1)##分號是從1到幾的意思
+```
+```{r}
+vNum1<-vNum2##objectname<-objectvalue
+vNum2<-c(2,vNum1)##此時vNum1的值參照GlobalEnvironment,執行後值2的值會改變,1的值也跟著變,不斷堆疊,所以每次執行的結果都不相同
+##用在當要收集的資料有不確定性時,如:
+```
+```{r}
+heightsoftheentireclassroom<-c()##若教室目前無人,可以假設為空向量
+```
+
+```{r}
+heightofastudentcominginsidetheclassroom<-sample(165:200,1)##sample為隨機抽樣,從165到200間隨機抽1個數字
+```
+```{r}
+heightsoftheentireclassroom<-
+  c(
+    heightsoftheentireclassroom
+    ,
+    heightofastudentcominginsidetheclassroom
+  )##原先的同學,新的同學
+```
+##charactor""
+##type決定資料如何被儲存下來
+##class區分資料可以如何被操作
+
+```{r}
+
+```
+
+```{r}
+dialogue <- c('小明說："明天不用上課。"',
+               '小花說："真的嗎？"')##想存下用雙引表達之對白,所以用單引括
+
+dialogue # 顯示原始值的內容（含輸入時的引號）會有反斜線(跳脫電腦原始定義escape key)(雙引號不再是字串定義)
+cat(dialogue)# cat顯示給人類看（含存出來）的值
+cat(dialogue, sep="\n") ##sep="\n", 不同元素換行陳列。跳脫n,不再是字母n,是換行
+```
+```{r}
+context<-"老師說換行要寫\\n"##跳脫再跳脫
+cat(context)
+```
+##factor類別資料,固定幾類資料反覆出現
+
+##charactor
+```{r}
+# 10位學生的主系
+majors10_char <- c('經濟學系','社會學系','社會學系','經濟學系','經濟學系','社會學系','經濟學系','經濟學系','經濟學系','社會學系')
+
+typeof(majors10_char)
+class(majors10_char)
+```
+##factor
+```{r}
+# 10位學生的主系
+majors10_factor <-factor(
+  c('經濟學系','社會學系','社會學系','經濟學系','經濟學系','社會學系','經濟學系','經濟學系','經濟學系','社會學系')##先把所有文字做堆疊
+                         )##電腦用整數來存,因為可能只有幾類,省記憶體,而且類別資料是間斷的
+##Or
+majors10_factor<-
+  factor(
+    majors10_char
+  )
+
+typeof(majors10_factor)
+class(majors10_factor)
+```
+##改變原本資料值得type或class as.
+```{r}
+as.integer(majors10_factor) 
+```
+```{r}
+a<-"1"
+as.numeric(a)->a##取代原本的值回存
+a+4
+```
+```{r}
+as.integer(majors10_factor)
+```
+```{r}
+chinese<-c("一","二","四")
+```
+```{r}
+chinese_factor<-
+  factor(chinese
+    
+  )##從1開始依序存下去
+
+```
+```{r}
+levels(chinese_factor)
+```
+##Date/Time時間輸入方式 時間來自時區time zone 時間儲存以哪個時區為準（電腦進行比較用）
+##說給電腦聽
+```{r}
+tpeTime <- ymd_hms("2020-03-18 13:52:40",
+        tz="Asia/Taipei")##年月日時分秒""/時區tZ=""
+pgTime <- mdy_hms("Mar.18, 2020, 05:52:40",
+                  tz="Europe/Lisbon")
+```
+```{r}
+tpeTimeVector <- 
+  ymd_hms(
+    c("2020-03-18 13:52:40",
+      "2020-03-11 03:12:40"),
+    tz="Asia/Taipei"
+    )##來自相同時區、相同輸入方式的時間文字字串「向量」，可以直接套入相同函數轉成Date/Time類別
+```
+```{r}
+typeof(tpeTime)##double 非整數數字
+class(tpeTime)##ct:date xt:time
+```
+##直接打物件名稱:轉成人看的
+##print
+##cat:顯示電腦記憶值
+```{r}
+cat(tpeTime)##和原點做比較,和1970/1/1 00:00:00 UTC距離過了多少秒
+```
+```{r}
+as.character(tpeTime)##轉乘charactor,print不會有時區
+```
+##human tell computer
+```{r}
+tpeTime2 <- ymd_hms("2010-03-18 16:52:40",
+        tz="Asia/Taipei")
+pgTime2 <- mdy_hms("Mar.01, 2020, 03:52:40",
+                  tz="Europe/Lisbon")
+```
+
+##let computer tell us time
+```{r}
+tpeTime3 <- 
+  with_tz(tpeTime2, tzone="America/New_York")##tpeTime2換成美國時區
+
+```
+```{r}
+print(tpeTime2)
+print(tpeTime3)
+```
+##丟給別人看
+```{r}
+tpeTime_utc <- with_tz(tpeTime, tzone="UTC")##轉成utc
+```
+```{r}
+# Method 2: pass as a character that fits ISO8601 date time description standard with tz onset specified
+tpeTime_iso8601 <- format_ISO8601(tpeTime, usetz=T)##use time zone is true
+tpeTime_iso8601
+```
+```{r}
+tpeTime<-ymd_hms(tpeTime_iso8601)
+```
+##list一種向量儲存格式
+##允許禮讚元素的type都不同(非actomic)v.s c(same type)
+```{r}
+library(lubridate)
+##先記三種不同class
+# Date/Time class
+purchasingTime <- 
+  ymd_hms("2020-03-31T13:40:55Z")##符合iso8601,UtC
+# character
+location <- "一芳"
+item <- "水果茶"
+# numeric
+quantity <- 2
+##創造一個物件mingspurchase,代表了一個list,裡面會有4個值 
+##第一個值來自時間,第二個裡面會有一芳,第3個是
+mingsPurchase <-
+  list(
+    purchasingTime, 
+    location, 
+    quantity, 
+    item
+  )
+print(mingsPurchase)
+```
+##每個元素值可以取名
+##elementname=
+```{r}
+mingsPurchase2 <-
+  list(
+    time = purchasingTime,
+    'location' = location,
+    "quantity" = quantity,
+    `item name` = item
+  )
+print(mingsPurchase2)
+```
+##list可以允許每一個元素為多個向量,atomic vector 或 non-atomic vector
+```{r}
+examplelist<-
+  list(
+    c(4,6,10),
+    list("Mary",173),##
+    TRUE
+  )
+print(examplelist)
+```
+```{r}
+# 「**2杯**」「**水果茶**」
+item1 <- list(
+  quantity=2,
+  `item name`="水果茶"
+)
+# 「**1杯**」「**日月紅茶**」
+item2 <- list(
+  quantity=1,
+  `item name`="日月紅茶"
+)
+
+mingsPurchase3 <-
+  list(
+    time = purchasingTime,
+    location = location,##=和<-是一樣的 右location裡的值為一芳
+    items=list(
+      item1,
+      item2
+    )
+  )
+
+print(mingsPurchase3)
+```
+```{r}
+student1 <-
+  list(
+    name = character(),
+    id = character(),
+    gmail = character(),
+    googleClassroom =
+      list(
+        displayName = character()
+      ),
+    github =
+      list(
+        username = character(),
+        repoUrl = character()
+      ),
+    homeworks = list(),
+    exams = list(),
+    list()
+  )
+
+names(student1) # 每個元素名稱
+length(student1) # 元素個數
+```
+```{r}
+str(student1)
+```
+
+
