@@ -1,0 +1,66 @@
+---
+title: "課?<a0>?練習模<e7><89><88>"
+author: "AnWen"
+date: "2020-11-17"
+output: output_format
+params:
+  id: "410873022"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+##選取元素
+```{r}
+listExample <- 
+  list(
+    student="小明",
+    `學期`=list(
+      `108-1`=list(
+        list(
+          name="個體經濟學",
+          teacher="Alice",
+          grade=85
+        )
+      ),
+      `108-2`=list(
+        list(
+          name="總體經濟學",
+          teacher="Mark",
+          grade=78
+        )
+      )
+    )
+  )
+print(listExample)
+```
+##用位置選
+##[[.]]
+```{r}
+listExample[[2]]
+
+```
+##[c(...)]
+```{r}
+# 顯示到第一層
+str(listExample,max.level = 1)
+
+listExample[c(1,2)]
+```
+##用名字選
+##$
+```{r}
+listExample$student
+listExample$`學期` # 特殊命名依然要用反頓點呼叫
+```
+##[c("name1","name2",...)]
+```{r}
+# 顯示到第一層
+str(listExample, max.level=1)
+
+listExample[c("學期")]
+listExample[c("student","學期")]
+```
+
