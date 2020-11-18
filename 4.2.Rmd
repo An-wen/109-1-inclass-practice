@@ -1,0 +1,76 @@
+---
+title: "課?<a0>?練習模<e7><89><88>"
+author: "AnWen"
+date: "2020-11-18"
+output: output_format
+params:
+  id: "410873022"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+##新增
+
+```{r}
+## 取出不存在
+a <- c(2, 5, 7)#只有三個值卻想選第4個
+a[[4]]##error:subscript out of bounds
+```
+```{r}
+##賦予不存在存在值
+a[[4]] <- 8
+print(a)
+```
+element names=features
+```{r}
+blue1<-list(
+  item="蕃茄牛丼",
+  quantity=1
+)
+blue2<-list(
+   item="起司蕃茄牛丼",
+    quantity=1
+)
+```
+
+```{r}
+order_value=list(
+  blue1,blue2
+)
+```
+
+```{r}
+restaurant="すき家 Sukiya (新北三峽)"#rectaurant_value
+date=mdy("Nov 10, 2020")#date_value
+order=order_value
+total=328#total_value
+```
+```{r}
+list(
+  restaurant="すき家 Sukiya (新北三峽)",#rectaurant_value
+  date=mdy("Nov 10, 2020"),#date_value
+  order=order_value,
+  total=328#total_value
+)
+```
+```{r}
+oneOrder <- list(
+  "restaurant"=restaurant,
+  "date"=date,
+  "order"=order,
+  "total"=total
+)
+```
+```{r}
+str(oneOrder)
+```
+Add
+```{r}
+oneOrder[["order"]][[2]]
+```
+#增加多少[c(?,?)]
+#先用length 看
+#呼喚時元素值須先存在
