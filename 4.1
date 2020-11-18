@@ -1,0 +1,121 @@
+---
+title: "課?<a0>?練習模<e7><89><88>"
+author: "AnWen"
+date: "2020-11-17"
+output: output_format
+params:
+  id: "410873022"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+##選取元素
+```{r}
+listExample <- 
+  list(
+    student="小明",
+    `學期`=list(
+      `108-1`=list(
+        list(
+          name="個體經濟學",
+          teacher="Alice",
+          grade=85
+        )
+      ),
+      `108-2`=list(
+        list(
+          name="總體經濟學",
+          teacher="Mark",
+          grade=78
+        )
+      )
+    )
+  )
+print(listExample)
+```
+##用位置選
+##[[.]]
+```{r}
+listExample[[2]]
+
+```
+##[c(...)]
+```{r}
+# 顯示到第一層
+str(listExample,max.level = 1)
+
+listExample[c(1,2)]
+```
+##用名字選
+##$
+```{r}
+listExample$student
+listExample$`學期` # 特殊命名依然要用反頓點呼叫
+```
+##[c("name1","name2",...)]
+```{r}
+# 顯示到第一層
+str(listExample, max.level=1)
+
+listExample[c("學期")]
+listExample[c("student","學期")]
+```
+##用「要/不要」邏輯向量選[c(T,T,F,...)]
+```{r}
+str(listExample[c(F,T)]) # 不要，要
+
+```
+```{r}
+# 有多少位置可選：
+length(listExample)
+```
+```{r}
+# 有多少名字可選：
+names(listExample)
+```
+```{r}
+numVector <- c(2,3,6,-1,4,2,6)
+select1 <- numVector[c(1,4)]; select1
+select2 <- select1[[1]]; select2
+
+# 相當於
+numVector[c(1,4)][[1]]
+
+
+
+```
+```{r}
+AA = c(Mary=176, John=188, Jenny= 165, Kate=170)#4個有命名數值
+LL = list(
+  Mary=list(176,"Taipei"),
+  John=list(188,"New Taipei"),
+  Jenny=list(165,"Taichung"),
+  Kate=list(170,"Hualien")
+)
+```
+##etract1element
+```{r}
+AA[[1]]
+AA[1]#刪掉非第一個元素的內容(AA remove 2 3 4)
+```
+```{r}
+LL[[1]]
+LL[1]
+```
+```{r}
+str(LL)
+```
+
+```{r}
+str(LL[[1]])#只把值拿出來
+```
+```{r}
+str(LL[1])#list( Mary=list(176,"Taipei"))
+```
+```{r}
+
+```
+
