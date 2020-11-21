@@ -1,0 +1,54 @@
+---
+title: "課?<a0>?練習模<e7><89><88>"
+author: "AnWen"
+date: "2020-11-21"
+output: output_format
+params:
+  id: "410873022"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+```{r}
+restaurant = "すき家 Sukiya (新北三峽店)"
+date = lubridate::mdy("Nov 10, 2020")
+order = list(
+  list(
+    item="蕃茄牛丼",
+    quantity=1
+      ) 
+)
+total = 328
+```
+```{r}
+oneOrder <- list(
+  "restaurant"=restaurant,
+  "date"=date,
+  "order"=order,
+  "total"=total
+)
+```
+單筆資料
+##新增
+#取出不存在
+#賦予不存在存在值
+```{r}
+##在oneOrder加入“起司蕃茄牛丼”
+oneOrder$order[[2]]#取出不存在(假設它存在oneOrder, 會是在order元素下的第二個元素值)
+oneOrder$order[[2]] <- list(
+    item="起司蕃茄牛丼",
+    quantity=1
+  )#賦予不存在存在值
+```
+多筆資料
+##新增
+```{r}
+currentNumberOfOrder <- length(oneOrder$order)
+# new order sequence number
+newOrderSeq <- 1:2 + currentNumberOfOrder
+oneOrder$order[newOrderSeq]
+```
+
