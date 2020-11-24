@@ -90,14 +90,23 @@ sukiyaMenu3<-purrr::transpose(sukiyaMenu)
 
 ```{r ans16}
 print(sukiyaMenu)
+sukiyaMenu[[1]]$category<-NULL
+sukiyaMenu[[2]]$category<-NULL
 sukiyaMenu4<-list(
-  list(category="新登場"
+  list(category="新登場",
+       list(
+         sukiyaMenu[[1]]
+       )
     
   ),
-  list(
+  list(category="推薦套餐",
+       list(
+         sukiyaMenu[[2]]
+       )
     
   )
 )
+print(sukiyaMenu4)
 ```
 
 ## 2. Foodpanda Sukiya 2
@@ -105,7 +114,7 @@ sukiyaMenu4<-list(
 課本[4.2.6](https://tpemartin.github.io/NTPU-R-for-Data-Science/operationonvectorandlist.html#sukiya-menu) 是真實Foodpana傳送到使用者端的資料，請執行以下該小節程式引入sukiyaMenu (請勿使用第一大題的sukiyaMenu，兩者是不同的):
 
 ```{r data2}
-sukiyaMenu <- jsonlite::fromJSON("https://www.dropbox.com/s/iu9b1hnvbtss83q/sukiyaMenu.json?dl=1", simplifyDataFrame = F)
+sukiyaMenu <- jsonlite::fromJSON(", simplifyDataFrame = F)https://www.dropbox.com/s/iu9b1hnvbtss83q/sukiyaMenu.json?dl=1"
 ```
 
 
