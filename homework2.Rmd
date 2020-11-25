@@ -2,8 +2,8 @@
 title: "homework 2"
 output: html_document
 params:
-  studentName: "柯安玟"
-  studentID: "410873022"
+  studentName: "你的名字"
+  studentID: "%id%"
 ---
 
 # 注意事項
@@ -30,83 +30,37 @@ library(lubridate); library(jsonlite); library(readr)
 ### 1.1
 
 ```{r ans11}
-
-item1_category_value="新登場"
-item1_name_value="番茄牛丼"
-item1_description_value="新鮮番茄的酸味,讓人食慾大開!"
-item1_price_value=109
-newPromotion1 <-list(
-  category=item1_category_value,
-  item=item1_name_value,
-  description=item1_description_value,
-  price=item1_price_value
-)
+# newPromotion1 
 ```
 
 ### 1.2
 
 ```{r ans12}
-item2_category_value="推薦套餐"
-item2_name_value="蔥溫玉牛丼套餐"
-item2_description_value="滿滿香脆的青蔥配上微辣的韓國辣醬,口味獨特,是SUKIYA的大人氣商品,非嚐不可!"
-item2_price_value=149
-recommend1<-list(
-  category=item2_category_value,
-  item=item2_name_value,
-  description=item2_description_value,
-  price=item2_price_value
-)
+# recommend1
 ```
 
 ### 1.3
 
 ```{r ans13}
-sukiyaMenu<-list(
-  newPromotion1,
-  recommend1
-)
+# sukiyaMenu
 ```
 
 ### 1.4
 
 ```{r ans14}
-##revise
-#move it from 新登場 to 牛丼類
-#changes its price to 120
-newPromotion1[c("category","price")]<-list("牛丼類",120)
-sukiyaMenu2<-list(newPromotion1,
-                  recommend1)
-
+# sukiyaMenu2
 ```
 
 ### 1.5
 
 ```{r ans15}
-
-sukiyaMenu3<-purrr::transpose(sukiyaMenu)
+# sukiyaMenu3
 ```
 
 ### 1.6
 
 ```{r ans16}
-print(sukiyaMenu)
-sukiyaMenu[[1]]$category<-NULL
-sukiyaMenu[[2]]$category<-NULL
-sukiyaMenu4<-list(
-  list(category="新登場",
-       list(
-         sukiyaMenu[[1]]
-       )
-    
-  ),
-  list(category="推薦套餐",
-       list(
-         sukiyaMenu[[2]]
-       )
-    
-  )
-)
-print(sukiyaMenu4)
+# sukiyaMenu4
 ```
 
 ## 2. Foodpanda Sukiya 2
@@ -114,7 +68,8 @@ print(sukiyaMenu4)
 課本[4.2.6](https://tpemartin.github.io/NTPU-R-for-Data-Science/operationonvectorandlist.html#sukiya-menu) 是真實Foodpana傳送到使用者端的資料，請執行以下該小節程式引入sukiyaMenu (請勿使用第一大題的sukiyaMenu，兩者是不同的):
 
 ```{r data2}
-sukiyaMenu <- jsonlite::fromJSON(", simplifyDataFrame = F)https://www.dropbox.com/s/iu9b1hnvbtss83q/sukiyaMenu.json?dl=1"
+sukiyaMenu <- jsonlite::fromJSON("https://www.dropbox.com/s/iu9b1hnvbtss83q/sukiyaMenu.json?dl=1", simplifyDataFrame = F)
+str(sukiyaMenu)
 ```
 
 
@@ -122,7 +77,8 @@ sukiyaMenu <- jsonlite::fromJSON(", simplifyDataFrame = F)https://www.dropbox.co
 請刪除sukiyaMenu裡的第一個元素（元素名稱是"※注意事項", 答案物件是sukiyaMenu本身（刪除後的結果）
 
 ```{r ans21}
-# sukiyaMenu
+sukiyaMenu[[1]]<-NULL
+sukiyaMenu
 ```
 
 ***
@@ -133,6 +89,14 @@ sukiyaMenu <- jsonlite::fromJSON(", simplifyDataFrame = F)https://www.dropbox.co
 請計算總金額存在totalAmount (class numeric or integer)
 
 ```{r ans22}
-# totalAmount
+totalAmount <- 159+249
+
+str(sukiyaMenu$雞肉丼類)
+str(雞肉丼類[[1]])
+燒烤雞肉丼飯大碗<-雞肉丼類[[1]][[10]][[2]][[4]]
+str(sukiyaMenu$鰻魚丼類)
+鰻牛丼中碗<-sukiyaMenu$鰻魚丼類[[2]][[10]][[1]][[4]]
+class(燒烤雞肉丼飯大碗)
+totalAmount<-燒烤雞肉丼飯大碗+鰻牛丼中碗
 ```
 
