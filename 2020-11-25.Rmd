@@ -1,0 +1,182 @@
+---
+title: "課?<a0>?練習模<e7><89><88>"
+author: "AnWen"
+date: "2020-11-25"
+output: output_format
+params:
+  id: "410873022"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+
+```{r}
+example <- list(
+  name=c("小明","小花","小新","美美"),
+  height=c(175,166,170,160),
+  weight=c(77,NA,60,43),
+  birthday=lubridate::ymd(c("1998-03-11","1999-12-22","1995-08-22","2001-10-10")),
+  hobby=c("美食 旅遊","旅遊 時尚","3C 美食","音樂 旅遊"),
+  residence=c("Taipei","New Taipei","Taichung","Kaohsiung"),
+  allowance=factor(c("0-1000","1001-2000","2000+","1001-2000")),
+  bloodType=c("A","B","B","O")
+)
+```
+```{r}
+str(example)
+df_example<-as.data.frame(example)
+```
+
+要/不要」向量
+##比較(smae class/type)
+數字比較
+```{r}
+#example裡誰的身高大於等於170
+
+example$name[c(T, F, T, F)]#要不要向量
+```
+```{r}
+str(example[c("name","height")])
+
+pick_above170 <- example$height >= 170#要/不要 身高>=170
+example$height
+c(175, 166, 170, 160) >= 170
+
+example$name[pick_above170]
+```
+##時間比較:
+```{r}
+
+#example裡誰1998年(含)以後出生"1998/1/1"
+
+
+example$birthday
+class(example$birthday)
+typeof(example$birthday)
+```
+```{r}
+print(example[c("name","birthday")])
+
+pick_after98 <- example$birthday >= lubridate::ymd("1998-01-01")
+```
+
+
+```{r}
+example$name[pick_after98]
+```
+##可排序類別資料比較:
+```{r}
+#example裡誰零用錢大於1000:
+
+
+print(example[c("name","allowance")])
+class(example$allowance)#factor(不可排序)
+levels(example$allowance)
+
+```
+
+```{r}
+example$allowance %in% c( "1001-2000","2000+" )#左邊的向量,有哪一些元素值是 "1001-2000" "2000+" 
+##LHS along to NHS set
+
+```
+```{r}
+example$allowance<-
+  ordered(example$allowance)
+```
+或在設定為factor時即把levels排好，並ordered=T
+```{r}
+example$allowance
+```
+```{r}
+allowance2<-
+  factor(
+  c("0-1000","1001-2000","2000+","1001-2000"),
+  levels=c("1001-2000","0-1000" ,"2000+" )
+)
+
+allowance2<-order(allowance2)
+```
+```{r}
+example$allowance <-
+  factor(
+    example$allowance,
+    levels=c("0-1000", "1001-2000", "2000+"),
+    ordered = T # 設定為可排序factor
+  )
+```
+
+```{r}
+pick_allowanceOver1000 <- example$allowance >= "1001-2000"
+example$name[pick_allowanceOver1000]
+```
+##相等，屬於
+#==: 等於
+#!=: 不等於
+example裡誰血型B型
+```{r}
+
+```
+
+```{r}
+
+
+print(example[c("name","bloodType")])
+
+pick_bloodB <-example$bloodType == "B"#FTTF
+##因為"=""<-"是一樣的
+example$name[pick_bloodB]
+```
+```{r}
+sequenceNums <- c(11, 6, 8, 11, 12, 11, 3, 7, 10, 8)
+sequenceNums %% 2
+pick_evens <- (sequenceNums %% 2) == 0
+sequenceNums[pick_evens]
+```
+```{r}
+print(example[c("name","residence")])
+
+set_TaipeiMetro <- c("Taipei","New Taipei")
+pick_fromTaipeiMetro <- example$residence %in% set_TaipeiMetro
+example$name[pick_fromTaipeiMetro]
+```
+在「要/不要」向量前加上!會成為否定句的「要/不要」向量，元素裡的TRUE會轉成FALSE, FALSE則轉成TRUE。
+```{r}
+pick_not_fromTaipeiMetro <- ! pick_fromTaipeiMetro
+# 或
+pick_not_fromTaipeiMetro <- !(example$residence %in% set_TaipeiMetro) # (..) 裡面會先運算完才做外面!的處理
+```
+##資料狀態
+#is.na: 有缺失
+#is.{class/type name}: is.integer, is.character, is.factor … etc
+```{r}
+x2 <- c(1,NA,10)
+y2 <- c(-1,NA,20)
+
+x3 <- c(NA,"小花")
+y3 <- c(NA,"小華")
+
+```
+前述的關係判斷遇到NA時，結果都會是NA——即無法判斷。
+#即無法判斷。要知道向量內各元素值是否NA，可使用is.na():
+```{r}
+x2
+is.na(x2)
+```
+字元偵測
+```{r}
+print(example[c("name","hobby")])
+
+pick_loveFood <- 
+  stringr::str_detect(example$hobby,"美食")
+#偵測是否有出現某些文字訊息
+example$name[pick_loveFood]
+```
+
+
+```{r}
+```
+
