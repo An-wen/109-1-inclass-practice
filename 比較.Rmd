@@ -1,0 +1,111 @@
+---
+title: "課?<a0>?練習模<e7><89><88>"
+author: "AnWen"
+date: "2020-11-29"
+output: output_format
+params:
+  id: "410873022"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+```{r}
+example <- list(
+  name=c("小明","小花","小新","美美"),
+  height=c(175,166,170,160),
+  weight=c(77,NA,60,43),
+  birthday=lubridate::ymd(c("1998-03-11","1999-12-22","1995-08-22","2001-10-10")),
+  hobby=c("美食 旅遊","旅遊 時尚","3C 美食","音樂 旅遊"),
+  residence=c("Taipei","New Taipei","Taichung","Kaohsiung"),
+  allowance=factor(c("0-1000","1001-2000","2000+","1001-2000")),
+  bloodType=c("A","B","B","O")
+)
+```
+######比較
+#example裡"誰的"__大於等於??
+pick_ <- example$什麼 >=   (得到邏輯向量)
+example$"誰的"[pick_]
+###數字比較ex身高
+```{r}
+#誰的身高大於等於170
+str(example[c("name","height")])
+
+pick_above170 <- example$height >= 170#得到要不要/邏輯向量(符合條件者留下)
+pick_above170
+
+example$name[pick_above170]#得到名字
+```
+###時間比較ex出生日期
+```{r}
+#example裡誰1998年(含)以後出生
+print(example[c("name","birthday")])
+
+pick_after98 <- example$birthday >= lubridate::ymd("1998-01-01")#讓電腦懂
+example$name[pick_after98]
+
+```
+###可排序類別資料比較
+```{r}
+print(example[c("name","allowance")])#"allowance"是factor,螢幕顯示是字串
+#改成可排序類別資料得特別設定
+example$allowance <- 
+  ordered(example$allowance)
+#或在設定為factor時即把levels排好，並ordered=T:
+example$allowance <-
+  factor(
+    example$allowance,
+    levels=c("0-1000", "1001-2000", "2000+"),
+    ordered = T # 設定為可排序factor
+  )#ordered = T小到大的概念
+pick_allowanceOver1000 <- example$allowance >= "1001-2000"
+example$name[pick_allowanceOver1000]
+```
+example裡"誰的"什麼是/不是??
+# ==等於/!=不等於
+```{r}
+#example裡誰血型B型
+print(example[c("name","bloodType")])
+
+pick_bloodB <- (example$bloodType) == "B"
+example$name[pick_bloodB]
+```
+```{r}
+#誰不是偶數
+sequenceNums <- c(11, 6, 8, 11, 12, 11, 3, 7, 10, 8)
+
+pick_evens <- (sequenceNums %% 2) == 0
+sequenceNums[pick_evens]
+```
+```{r}
+pick_odds<-!(pick_evens)
+pick_odds
+```
+#NA有值但我不知道那是什麼值(資料有缺失,無法判斷)
+```{r}
+x2 <- c(1,NA,10)
+y2 <- c(-1,NA,20)
+
+x3 <- c(NA,"小花")
+y3 <- c(NA,"小華")
+```
+```{r}
+x2
+is.na(x2)
+```
+#字元偵測
+#有出現某些文字
+#stringr::str_detect()
+```{r}
+print(example[c("name","hobby")])
+
+pick_loveFood <- stringr::str_detect(example$hobby,"美食")
+example$name[pick_loveFood]
+```
+```{r}
+?str_detect
+```
+
+
