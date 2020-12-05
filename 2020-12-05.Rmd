@@ -1,0 +1,94 @@
+---
+title: "課?<a0>?練習模<e7><89><88>"
+author: "AnWen"
+date: "2020-12-05"
+output: output_format
+params:
+  id: "410873022"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Your code
+
+```{r}
+library(stringr)
+```
+
+```{r}
+library(glue)
+```
+```{r}
+thatsAlright <- 
+  jsonlite::fromJSON(
+    "https://www.dropbox.com/s/f3ox7rd5favr0o0/thatsAlright.json?dl=1"
+  )
+View(thatsAlright)
+```
+```{r}
+# 字串向量長度
+length(c(thatsAlright))
+# 每個元素值有幾個字元(包含符號與空格)
+str_length(c(thatsAlright))
+```
+###切割split
+```{r}
+line67 <- thatsAlright[c(6,7)]
+line67<-c(line67,"And very soon,I'll")
+```
+```{r}
+str_split(line67, ", ")->line_67_split
+str(line_67_split)
+```
+#規律探測
+```{r}
+pattern="you" 
+```
+str_detect
+```{r}
+# 'you'是否出現在第1,2,3,...最後一句
+pick_you <- str_detect(thatsAlright, pattern="you")
+str_view_all(thatsAlright[pick_you],"you")
+```
+
+str_which
+```{r}
+# 哪幾句有'you'出現
+whichHas_you <- str_which(thatsAlright, pattern="you")
+whichHas_you
+str_view_all(thatsAlright[whichHas_you],"you")
+```
+str_subset子集合
+```{r}
+# 只留下有出現'you'字眼的句子
+onlyYou <- str_subset(thatsAlright, pattern="you")
+
+length(thatsAlright)
+length(onlyYou)
+```
+```{r}
+which(pick_you)#把要不要向量轉成整數值的位置
+```
+```{r}
+# 每一句有幾個"you"
+countEach_you <- str_count(thatsAlright,
+                           pattern="you")
+countEach_you
+str_view_all(
+  thatsAlright[1:10], pattern="you")
+```
+```{r}
+patternWithBoundary="\\byou\\b"
+```
+```{r}
+str_view_all(
+  c("I am yours",
+    "And you?",
+    "Young and smart", 
+    "It means that you and I are lucky"),
+  pattern=patternWithBoundary
+)
+```
+
