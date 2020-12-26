@@ -1,5 +1,5 @@
 ---
-title: "課�<a0>�練習模<e7><89><88>"
+title: "課?<a0>?練習模<e7><89><88>"
 author: "AnWen"
 date: "2020-12-26"
 output: output_format
@@ -12,8 +12,69 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Your code
+##4.9
+```{r}
+library(purrr)
+```
 
 ```{r}
+sukiyaMenu <- jsonlite::fromJSON("https://www.dropbox.com/s/iu9b1hnvbtss83q/sukiyaMenu.json?dl=1")
 
+nonsetMenu3 <- sukiyaMenu[c("豪華雙饗丼", "牛丼類", "咖哩類" )]#三大類
+```
+留下三大類裡$name
+```{r}
+#創造空的list
+items<-list()
+#使用$增加元素,元素名稱:dishname<-dishname底下元素值
+#總共會放三大類dishname餐點名稱:dishname元素值是一個list of3
+items$dishname=vector("list",length = 3)#create a list of 3
+#把三大類的餐點名稱放進去(Null)
+
+```
+#vector 先把空格創造好,再把東西填進去(迴圈)
+```{r}
+dishname=nonsetMenu3[[1]]$name#用位置選
+#轉成vector,存到item裡dishname第一個位置
+unlist(dishname)->items$dishname[[1]]
+```
+#{ }
+```{r}
+#分區思考
+result1<-{
+  dishname=nonsetMenu3[[1]]$name#用位置選
+#轉成vector,存到item裡dishname第一個位置
+unlist(dishname)->items$dishname[[1]]
+}#括號裡面的最後一個可視值,可以做為值用來賦予一個物件元素值
+#result<-{最後expression}
+result2<-{
+  dishname=nonsetMenu3[[2]]$name#用位置選
+#轉成vector,存到item裡dishname第一個位置
+unlist(dishname)->items$dishname[[2]]
+}
+result3<-{
+  dishname=nonsetMenu3[[3]]$name#用位置選
+#轉成vector,存到item裡dishname第一個位置
+unlist(dishname)
+}
+```
+tilda formula
+#map:給formula,給物件,一一把.x替換掉
+```{r}
+
+```
+#position sequence
+```{r}
+seq_along()
+```
+```{r}
+map(
+seq_along(sukiyaMenu),
+~{
+  dishname=sukiyaMenu [[.x]]$name
+unlist(dishname)
+}
+)->result
+result<-(unlist(result[-1]))
 ```
 
