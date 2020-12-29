@@ -86,16 +86,22 @@ jsonlite::fromJSON("https://www.dropbox.com/s/ttw2j7nitc35vfx/palaceMuseumPainti
 
 ```{r ans41, echo=F}
 allcreators<-vector("character",length = 200)
-{ 
-  creator_list<-map(
-    painting,
+
+
+  map(
+    seq_along(painting) ,
     ~{
-      painting[[.x]]$DACatalog$MetaDesc$Creator
+      creator=painting[[.x]]$DACatalog$MetaDesc$Creator
+      unlist(creator)
       }
-     )
-  unlist(creator_list)
-}->creator
-# allCreators
+     )->allcreators#抽出Creator
+                   #放入allcreators
+  pick_creator<-str_detect(allcreators,pattern ="作者" )
+  pick_non_creator<-!pick_creator
+  #creator==NULL
+  allcreators[pick_non_creator]<-"無名氏"
+  
+  allCreators
 ```
 
 #### 4.2 Creator collection{-}
@@ -106,7 +112,21 @@ creatorX <- "仇英" # 改題時名稱會隨機取出
 ```
 
 ```{r ans42, echo=F}
-# creatorX_artworks
+creatorX_artworks<-list()
+creatorX_artworks$creatorX<-vector("list",length = 3)
+{
+ map(
+   painting,
+   ~{
+     
+   }
+ ) 
+  
+}
+Title=
+Id=
+ICON =
+ creatorX_artworks
 ```
 
 #### 4.3 Creator-based Journey{-}
