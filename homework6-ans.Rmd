@@ -1,0 +1,374 @@
+ ---
+title: "homework 6"
+output: html_document
+params:
+  studentName: "你的名字"
+  studentID: "你的學號"
+---
+
+# 注意事項
+
+存檔與填寫注意事項：
+
+假設你叫王小明，學號41078392。
+
+  1. 有些同學可能家裡電腦不是utf-8設定，為防萬一，請於存檔時使用：File > save with enconding, 然後選utf-8
+
+  2. 本文檔開始的Frontmatter中，studentID（即key）其value目前為"你的學號"，以上面學號為例則必需改成"41078392"；而studentName（key）其value目前為"你的名字"，以上面名字為例則必需改成"王小明"
+  
+> 每次作業滿分10分：有寫作業於期限內上傳得3分，剩餘7分依作業準確率決定最後得分多寡，除非該題另有規定。
+
+> 前述存檔與frontmatter要求缺任何一個則扣1分。
+
+請先執以下code chunk, 引入所需packages，答案禁止引用其他套件（Package）。
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval=F)
+library(jsonlite); library(lubridate); library(readr); library(stringr); library(purrr)
+```
+
+# 題目
+
+完成第5章綜合練習以下幾題：
+
+### 3. 交友軟體{-}
+
+```{r, echo=T, eval=FALSE}
+members <- jsonlite::fromJSON("https://www.dropbox.com/s/olji1q29t2autec/ntpumeetMembers.json?dl=1", simplifyDataFrame = F)
+memberIds <- purrr::map_chr(members, ~{.x[["memberID"]]})
+```
+
+#### 3.1 Member login{-}
+
+> global environment has: **members**, **memberIds**
+
+Complete the **appLogin** function design:
+
+```{r ans31, echo=F}
+ map_lgl(members,
+              ~str_detect(.x$memberID,"memberID"))
+```
+
+
+```{r ans31, echo=F}
+appLogin <- function(memberID, currentGPS){
+
+  # look for member's element location
+  pick_currentUser <- {
+    which(
+      map_lgl(members,
+              ~str_detect(.x$memberID,memberID))#產生要不要向量,
+      )
+  }
+  currentUser <- members[[pick_currentUser]]
+
+  # update user's latestGPS
+  currentUser$latestGPS <- currentGPS
+
+  return(currentUser)
+}
+
+# currentUser <- appLogin(memberID, currentGPS)
+```
+
+#### 3.2 Refine{-}
+
+> global environment has: **members**, **memberIds**, **appLogin**, **currentUser**
+
+```{r data32, eval=F, echo=T}
+otherMembers <- sample(memberIds[which(memberIds != memberID)],100)
+```
+
+```{r ans32, echo=F, eval=F}
+refine_byLikesBlocks <- function(otherMembers){
+  pick_nonBlocks <-
+    !(otherMembers %in% currentUser$blocks)
+  validOtherMembers <- otherMembers[pick_nonBlocks]
+  whichIs_frontMember <-
+    which(validOtherMembers %in% currentUser$likes)
+
+  refined_otherMembers <-
+    c(
+      validOtherMembers[whichIs_frontMember],
+      validOtherMembers[-whichIs_frontMember]
+    )
+  return(refined_otherMembers)
+}
+
+# refine_byLikesBlocks
+```
+
+#### 3.3 Refresh{-}
+
+
+> global environment has: **members**, **memberIds**, **appLogin**, **currentUser**, **refine_byLikesBlocks**
+
+
+```{r ans33, eval=F, echo=F}
+refresh <- function(){
+  currentUserGPS <-
+    currentUser$latestGPS
+
+  # for each member, compute his distance^2
+  # ## try one member first,
+  # distanceSquare <- {
+  #   otherGPS <- members[[1]]$latestGPS
+  #   sum((currentUserGPS - otherGPS)**2)
+  # }
+  # distanceSquare
+
+  # if it works, map all members
+  distanceSquare <-
+    map(
+      members,
+      ~{
+        otherGPS <- .x$latestGPS
+        sum((currentUserGPS - otherGPS)**2)
+      }
+    )
+
+  # Get the order of distances
+  distanceOrder <- order(unlist(distanceSquare))
+
+  # Reorder memberIds by distanceSquare
+  memberIdsbyDistance <- memberIds[distanceOrder]
+  whichIs_otherMembers <- which(memberIdsbyDistance != currentUser$memberID)
+  otherMembers <-
+    memberIdsbyDistance[whichIs_otherMembers]
+  refined_members <- refine_byLikesBlocks(otherMembers)
+
+  return(refined_members[1:30])
+}
+```
+
+### 4. 故宮畫藏查詢App{-}
+
+執行以下程式下載200幅故宮中國畫作資訊(**painting**):
+```{r data4, echo=T}
+jsonlite::fromJSON("https://www.dropbox.com/s/ttw2j7nitc35vfx/palaceMuseumPainting.json?dl=1", simplifyDataFrame = F) -> painting
+```
+
+#### 4.1 Full list of the painters{-}
+
+```{r ans41, echo=F}
+allCreators <- {
+
+  # Block 1, Idenitfy the 無名氏
+  NoCreatorNameSequence <- {
+    NoCreatorName <- map(
+      seq_along(painting),
+      ~ {
+        length(painting[[.x]]$DACatalog$MetaDesc$Creator) == 0#(painting 的每一筆資料中,取出Creator),取出字串向量長度等於零,那些底下的字串長度為0的Creator形成list,暫命名為NoCreatorName
+      }
+    )
+
+    which(unlist(NoCreatorName)) -> NoCreatorNameSequence#打破list各自元素區隔而整併成一個atomic vector,字串向量為0的Creator為T,列出其位置
+    NoCreatorNameSequence
+  }
+  # NoCreatorNameSequence #length = 8
+
+  # Block 2, Extract the creator name
+  allCreators_BeReady <- {
+    map(
+      seq_along(painting),
+      ~ {
+        str_extract((painting[[.x]]$DACatalog$MetaDesc$Creator), "(?<=作者：)[\u4E00-\u9FFF]+")
+      }
+    )
+  }
+  # allCreators_BeReady
+
+
+  # allCreators_BeReady[NoCreatorNameSequence] %>% class()
+  allCreators_BeReady[NoCreatorNameSequence] <- list("無名氏")
+  allCreators <- unlist(allCreators_BeReady)
+  allCreators
+}
+# allCreators
+```
+
+#### 4.2 Creator collection{-}
+
+Consider **creatorX**
+```{r data42, echo=TRUE}
+creatorX <- "仇英" # 改題時名稱會隨機取出
+```
+
+```{r ans42, echo=F}
+creatorX_artworks <- {
+  whichIsXartworks <-
+    which(allCreators %in% creatorX)
+
+  whichIsXartworks[[1]]
+  # try to formulate information of one artwork. If i works, map all artworks to a list
+  ## one artwork
+  try({
+    .x <- whichIsXartworks[[1]]
+    artworkX_info <-
+      list(
+        Title = as.character(painting[[.x]]$DACatalog$MetaDesc$Title),
+        Id = as.character(painting[[.x]]$DACatalog$MetaDesc$Identifier),
+        Icon =
+          as.character(painting[[.x]]$DACatalog$AdminDesc$ICON)
+      )
+  })
+
+
+  map(
+    whichIsXartworks,
+    ~ {
+      patternRemoval = '(主要題名|作品號)：'
+      list(
+        Title = str_remove(as.character(painting[[.x]]$DACatalog$MetaDesc$Title), patternRemoval),
+        Id = str_remove(as.character(painting[[.x]]$DACatalog$MetaDesc$Identifier), patternRemoval),
+        Icon =
+          as.character(painting[[.x]]$DACatalog$AdminDesc$ICON)
+      )
+    }
+  ) -> creatorX_artworks
+  creatorX_artworks
+}
+
+# creatorX_artworks
+```
+
+#### 4.3 Creator-based Journey{-}
+
+```{r ans43, echo=F}
+get_creatorSeries <- function(CreatorName){
+
+  #Check if the input is a character
+  assertthat::assert_that(is.character(CreatorName),
+                          msg="The Input Creator Name should be a character class object.")
+
+  #Check if the input is really a part of our roster.
+  assertthat::assert_that(CreatorName %in% allCreators,
+                          msg="The Input Creator Name does not exist, PLEASE check with our reception.")
+
+  whichIsXartworks <-
+    which(allCreators %in% CreatorName)
+
+  patternRemoval = '(主要題名|作品號)：'
+  map(
+    whichIsXartworks,
+    ~{
+      list(
+      Title=str_remove(as.character(painting[[.x]]$DACatalog$MetaDesc$Title), patternRemoval),
+      Id=str_remove(as.character(painting[[.x]]$DACatalog$MetaDesc$Identifier), patternRemoval),
+      Icon=
+  as.character(painting[[.x]]$DACatalog$AdminDesc$ICON)
+    )
+    }
+  ) -> creatorX_artworks
+
+  return(creatorX_artworks)
+}
+
+# get_creatorSeries
+```
+
+
+```{r, echo=T}
+get_creatorSeries("王淵")
+```
+
+### 加分題
+
+只有當非加分題的finalGrade > 6時，加分題才會加分。每小題「完全答對」加finalGrade一分，finalGrade達10分即不再加。
+
+#### 4.4 User interaction
+
+```{r ans44, echo=F}
+generate_creatorInteractiveSession <-
+  function(CreatorName){
+    artworks <- get_creatorSeries(CreatorName)
+    map(
+      seq_along(artworks),
+      ~{
+        artworks[[.x]]$browse=function(){browseURL(artworks[[.x]]$Icon)}
+        artworks[[.x]]
+        }
+    ) -> artworks
+
+    names(artworks) <-
+      unlist(
+        map(artworks,
+            ~{.x$Title})
+      )
+
+    artworks
+  }
+# generate_creatorInteractiveSession
+```
+
+```{r, echo=T}
+generate_creatorInteractiveSession("王淵") -> results
+results$`元王淵蓮池禽戲圖　卷`$browse()
+results$`明仇英仿趙伯駒煉丹圖　軸`$browse()
+```
+
+### 1. Taylor Expansion{-}
+
+#### 1.1 f'(x_0) {-}
+
+
+```{r ans11, echo=F}
+df <- function(f, x0=0, epsilon=0.00001)
+{
+  (f(epsilon+x0)-f(x0))/epsilon
+}
+```
+
+#### 1.2 save guard your function{-}
+
+```{r ans12, echo=F}
+df_assert <- function(f, x0=0, epsilon=0.00001){
+  assertthat::assert_that(
+    is.function(f),
+    msg="Input f is not a function."
+  )
+  assertthat::assert_that(
+    length(formals(f))==2,
+    msg="Sorry the current function deals with only one-dimensional input function."
+  )
+  df(f, x0=x0, epsilon=epsilon)
+}
+```
+
+
+#### 1.3 f''(x_0){-}
+
+
+```{r ans13, echo=F}
+d2f <- function(f, x0=0, epsilon=0.00001)
+{
+  (df(f,x0=x0+epsilon, epsilon)-df(f, x0=x0, epsilon))/epsilon
+}
+```
+
+#### 1.4 ftb{-}
+
+```{r ans14, echo=F}
+ftb <- function(f, x, x_0=0, epsilon=0.00001)
+{
+  f(x_0)+df(f,x_0, epsilon)*(x-x_0)+d2f(f,x_0,epsilon)*(x-x_0)^2/2
+}
+```
+
+***
+
+How good is Taylor expansion of degree 2 approximation?
+
+```{r}
+originF <- function(x) sin(x)+sqrt(5*x^2-x+1)*exp(x)
+```
+
+```{r}
+originF(0.0002) # 1.0003
+ftb(originF, 0.0002) # 1.0003
+
+originF(0.02) # 1.030977
+ftb(originF, 0.02) # 1.030951
+```
+
+
+
